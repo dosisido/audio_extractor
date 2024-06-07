@@ -1,0 +1,7 @@
+.venv/
+.env
+__pycache__/
+output.*
+*cache/
+valid_ids.json
+*.mp4
