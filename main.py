@@ -122,6 +122,7 @@ def signal_handler(sig, frame):
     print('Stopping the program')
     q.put(None)  # Signal the queue processing thread to exit
     bot.stop_polling()  # Stop the bot polling
+    if not is_dev_env(): bot.send_message(MY_ID, "Program stopped")
 
 
 signal.signal(signal.SIGINT, signal_handler)
