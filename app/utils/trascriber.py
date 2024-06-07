@@ -16,8 +16,7 @@ from datetime import datetime
 import os
 
 
-import dotenv
-dotenv.load_dotenv()
+import utils.config
 MODEL_TYPE = os.getenv("MODEL_TYPE")
 TMP_FOLDER = os.getenv("TRANSCRIBER_FOLDER")
 assert TMP_FOLDER.endswith("cache"), "TMP_FOLDER must end with 'cache'"

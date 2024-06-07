@@ -13,8 +13,7 @@ import time
 import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-import dotenv
-dotenv.load_dotenv()
+import utils.config
 MY_ID = int(os.getenv("MY_ID"))
 TOKEN_API = os.getenv("TOKEN_API")
 TMP_FOLDER = os.getenv("BOT_FOLDER")
@@ -46,7 +45,7 @@ def process_queue(q):
 
 @bot.message_handler(func=lambda message: user_message_id(message) not in VALID_IDS)
 def not_me(message):
-    bot.reply_to(message, "Bot ad uso personale di Dosisido")
+    bot.reply_to(message, "User not allowed")
 
 
 @bot.message_handler(content_types=["video"])
@@ -73,7 +72,7 @@ def video_handler(message):
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    bot.reply_to(message, "Hello!")
+    bot.reply_to(message, "User allowed")
 
 @bot.message_handler(commands=["allowed"])
 def allowed(message):

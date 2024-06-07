@@ -4,8 +4,7 @@ import os
 from typing import Tuple
 from telebot import util
 
-import dotenv
-dotenv.load_dotenv()
+import utils.config
 TOKEN_API = os.getenv("TOKEN_API")
 
 

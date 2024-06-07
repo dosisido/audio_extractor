@@ -1,6 +1,5 @@
 import os
-import dotenv
-dotenv.load_dotenv()
+import utils.config
 
 
 def is_dev_env():
