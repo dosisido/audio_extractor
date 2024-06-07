@@ -4,6 +4,7 @@ from utils.t_bot import get_video, user_message_id
 import telebot
 from datetime import datetime
 import json
+import signal
 
 import threading
 import queue
@@ -25,6 +26,9 @@ bot.send_message(MY_ID, "Program started")
 q = queue.Queue()
 
 VALID_IDS = []
+if not os.path.isfile("valid_ids.json"):
+    with open("valid_ids.json", "w") as file:
+        json.dump([MY_ID], file, indent=4)
 with open("valid_ids.json", "r") as file:
     VALID_IDS = json.load(file)
 VALID_IDS.append(int(MY_ID))
@@ -33,12 +37,11 @@ VALID_IDS = set(VALID_IDS)
 
 def process_queue(q):
     while True:
-        item = q.get()  # Block and wait for an item from the queue
-        if item is None:  # Use None as a signal to stop the thread
-            break
+        item = q.get()
+        if item is None: break
         item.elaborate()
         print(f"Processing item: {item}")
-        q.task_done()  # Indicate that the item has been processed
+        q.task_done()
 
 
 @bot.message_handler(func=lambda message: user_message_id(message) not in VALID_IDS)
@@ -77,7 +80,7 @@ def allowed(message):
     if user_message_id(message) != MY_ID:
         bot.reply_to(message, "Non hai i permessi per eseguire questa azione")
         return
-    bot.reply_to(message, f"Lista utenti autorizzati:\n{'\n'.join(tuple(str(i) for i in VALID_IDS))}")
+    bot.reply_to(message, "Lista utenti autorizzati:\n" + '\n'.join(str(i) for i in VALID_IDS))
 
 @bot.message_handler(commands=["add_id"])
 def add_id(message):
@@ -88,7 +91,7 @@ def add_id(message):
         user_id = message.text.split(" ")[1]
         VALID_IDS.add(int(user_id))
         with open("valid_ids.json", "w") as file:
-            json.dump(list(VALID_IDS), file)
+            json.dump(list(VALID_IDS), file, indent=4)
         bot.reply_to(message, f"Utente {user_id} aggiunto alla lista")
     except Exception as e:
         bot.reply_to(message, f"Errore: {e}")
@@ -115,7 +118,14 @@ def remove_id(message):
         bot.reply_to(message, f"Errore: {e}")
 
 
+def signal_handler(sig, frame):
+    print('Stopping the program')
+    q.put(None)  # Signal the queue processing thread to exit
+    bot.stop_polling()  # Stop the bot polling
 
+
+signal.signal(signal.SIGINT, signal_handler)
 thread = threading.Thread(target=process_queue, args=(q,))
 thread.start()
 bot.polling(timeout=10, long_polling_timeout=5)
+print("Program started")
