@@ -16,7 +16,6 @@ class Data_Structure:
 
         self.bot.reply_to(self.message, "Elaborazione in corso")
         elaboration = ElaborateMp4(self.video_path)
-        elaboration.max_duration = 10
         text = elaboration.transcribe()
 
         texts = split_text(text)
