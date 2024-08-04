@@ -34,9 +34,9 @@ VALID_IDS.append(int(MY_ID))
 VALID_IDS = set(VALID_IDS)
 
 
-def process_queue(q):
+def process_queue(q: queue.Queue):
     while True:
-        item = q.get()
+        item: Data_Structure = q.get()
         if item is None: break
         item.elaborate()
         print(f"Processing item: {item}")
