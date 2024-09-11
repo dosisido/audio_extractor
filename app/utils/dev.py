@@ -1,7 +1,5 @@
-import os
-import utils.config
+from utils.config import MODE
 
 
 def is_dev_env():
-    MODE = os.getenv("MODE")
     return MODE == "development"

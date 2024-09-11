@@ -1,11 +1,9 @@
 
 import requests
-import os
 from typing import Tuple
 from telebot import util
 
-import utils.config
-TOKEN_API = os.getenv("TOKEN_API")
+from utils.config import TOKEN_API
 
 
 def get_video(message, bot, file_path):

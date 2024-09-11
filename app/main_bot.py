@@ -30,6 +30,7 @@ if not os.path.isfile("valid_ids.json"):
         json.dump([MY_ID], file, indent=4)
 with open("valid_ids.json", "r") as file:
     VALID_IDS = json.load(file)
+    assert isinstance(VALID_IDS, list)
 VALID_IDS.append(int(MY_ID))
 VALID_IDS = set(VALID_IDS)
 
