@@ -1,4 +1,4 @@
-from utils.config import MODE
+from lib.config import MODE
 
 
 def is_dev_env():

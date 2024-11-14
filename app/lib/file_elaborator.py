@@ -1,14 +1,14 @@
-from utils.trascriber import ElaborateMp4, transcribe
-from utils.t_bot import split_text
+from lib.trascriber import transcribe
+from lib.utils_bot import split_text
 import os
 from time import sleep
-from telebot import TeleBot, Message
+from telebot import TeleBot
 
 
-class Data_Structure:
+class FileElaborator:
     video_path: str
 
-    def __init__(self, video_path: str, message: Message, bot: TeleBot):
+    def __init__(self, video_path: str, message, bot: TeleBot):
         self.video_path = video_path
         self.message = message
         self.bot = bot

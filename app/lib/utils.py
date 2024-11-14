@@ -14,4 +14,9 @@ def getWisperModel():
     else:
         return "tiny"
 
-        
+def format_time_from_seconds(seconds):
+    m = seconds // 60
+    s = seconds % 60
+    h = m // 60
+    m = m % 60
+    return f"{int(h):02d}:{int(m):02d}:{int(s):02d}"

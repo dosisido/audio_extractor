@@ -1,6 +1,11 @@
-from utils.data_structure import Data_Structure
-from utils.dev import is_dev_env
-from utils.t_bot import get_video, user_message_id
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+
+from lib.config import MY_ID, TOKEN_API, BOT_FOLDER as TMP_FOLDER, MAX_QUEUE_SIZE
+from lib.file_elaborator import FileElaborator
+from lib.dev import is_dev_env
+from lib.utils_bot import get_video, user_message_id
 import telebot
 from datetime import datetime
 import json
@@ -8,22 +13,10 @@ import signal
 
 import threading
 import queue
-import time
-
-import os
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-import utils.config
-MY_ID = int(os.getenv("MY_ID"))
-TOKEN_API = os.getenv("TOKEN_API")
-TMP_FOLDER = os.getenv("BOT_FOLDER")
-MAX_QUEUE_SIZE = int(os.getenv("MAX_QUEUE_SIZE"))
 
 
 bot = telebot.TeleBot(TOKEN_API)
-bot.send_message(MY_ID, "Program started")
 q = queue.Queue()
-
 VALID_IDS = []
 if not os.path.isfile("valid_ids.json"):
     with open("valid_ids.json", "w") as file:
@@ -32,12 +25,14 @@ with open("valid_ids.json", "r") as file:
     VALID_IDS = json.load(file)
     assert isinstance(VALID_IDS, list)
 VALID_IDS.append(int(MY_ID))
-VALID_IDS = set(VALID_IDS)
+VALID_IDS = set(VALID_IDS)  
+
+
 
 
 def process_queue(q: queue.Queue):
     while True:
-        item: Data_Structure = q.get()
+        item: FileElaborator = q.get()
         if item is None: break
         item.elaborate()
         print(f"Processing item: {item}")
@@ -63,7 +58,7 @@ def video_handler(message):
         video_path = os.path.join(TMP_FOLDER, "video{:-%Y%m%d%H%M%S}.mp4".format(datetime.now()))
         get_video(message, bot, video_path)
 
-        d = Data_Structure(video_path, message, bot)
+        d = FileElaborator(video_path, message, bot)
         q.put(d)
 
 
@@ -77,6 +72,7 @@ def start(message):
 
 @bot.message_handler(commands=["allowed"])
 def allowed(message):
+    print(type(user_message_id(message)), type(MY_ID), user_message_id(message)== MY_ID)
     if user_message_id(message) != MY_ID:
         bot.reply_to(message, "Non hai i permessi per eseguire questa azione")
         return
@@ -118,15 +114,23 @@ def remove_id(message):
         bot.reply_to(message, f"Errore: {e}")
 
 
-def signal_handler(sig, frame):
-    print('Stopping the program')
-    q.put(None)  # Signal the queue processing thread to exit
-    bot.stop_polling()  # Stop the bot polling
-    if not is_dev_env(): bot.send_message(MY_ID, "Program stopped")
 
 
-signal.signal(signal.SIGINT, signal_handler)
-thread = threading.Thread(target=process_queue, args=(q,))
-thread.start()
-bot.polling(timeout=10, long_polling_timeout=5)
-print("Program started")
+def main():
+    def signal_handler(sig, frame):
+        print('Stopping the program')
+        q.put(None)  # Signal the queue processing thread to exit
+        bot.stop_polling()  # Stop the bot polling
+        if not is_dev_env(): bot.send_message(MY_ID, "Program stopped")
+    
+  
+
+    bot.send_message(MY_ID, "Program started")
+    print("Program started")
+    signal.signal(signal.SIGINT, signal_handler)
+    thread = threading.Thread(target=process_queue, args=(q,))
+    thread.start()
+    bot.polling(timeout=10, long_polling_timeout=5)
+
+if __name__ == "__main__":
+    main()

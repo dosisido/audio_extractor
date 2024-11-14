@@ -1,12 +1,12 @@
 
 import requests
 from typing import Tuple
-from telebot import util
+from telebot import util, TeleBot
 
-from utils.config import TOKEN_API
+from lib.config import TOKEN_API
 
 
-def get_video(message, bot, file_path):
+def get_video(message, bot: TeleBot, file_path):
     # Get the file ID of the video
     file_id = message.video.file_id
     
@@ -30,10 +30,7 @@ def split_text(text, max_length= 3500) -> Tuple[str]:
     # Splits by last '\n', '. ' or ' ' in exactly this priority.
     # smart_split returns a list with the splitted text.
     splitted_text = util.smart_split(text, chars_per_string=max_length)
-    l = []
-    for text in splitted_text:
-        l.append(text)
-    return tuple(l)
+    return tuple(splitted_text)
 
 def user_message_id(message) -> int:
     return message.from_user.id
