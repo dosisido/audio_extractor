@@ -8,7 +8,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN pip install --upgrade pip
 RUN pip install setuptools-rust
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 RUN pip install -U openai-whisper
 
 # WORKDIR /app

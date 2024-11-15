@@ -5,6 +5,9 @@ import os
 import time
 from lib.config import MODEL_TYPE
 from lib.utils import format_time_from_seconds
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 
 
 files = get_files_path()

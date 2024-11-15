@@ -2,13 +2,12 @@
 import requests
 from typing import Tuple
 from telebot import util, TeleBot
+from telebot.types import Message
 
 from lib.config import TOKEN_API
 
 
-def get_video(message, bot: TeleBot, file_path):
-    # Get the file ID of the video
-    file_id = message.video.file_id
+def get_file(file_id, bot: TeleBot, file_path):
     
     # Get the file info
     file_info = bot.get_file(file_id)
@@ -22,8 +21,9 @@ def get_video(message, bot: TeleBot, file_path):
     if response.status_code != 200:
         raise Exception("Errore durante il download del video")
 
-    with open(file_path, 'wb') as video_file:
-        video_file.write(response.content)
+
+    with open(file_path, 'wb') as file:
+        file.write(response.content)
 
 def split_text(text, max_length= 3500) -> Tuple[str]:
     assert max_length <= 4096, "max_length must be less than or equal to 4096"
@@ -32,5 +32,5 @@ def split_text(text, max_length= 3500) -> Tuple[str]:
     splitted_text = util.smart_split(text, chars_per_string=max_length)
     return tuple(splitted_text)
 
-def user_message_id(message) -> int:
+def user_message_id(message: Message) -> int:
     return message.from_user.id

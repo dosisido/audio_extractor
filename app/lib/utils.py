@@ -20,3 +20,7 @@ def format_time_from_seconds(seconds):
     h = m // 60
     m = m % 60
     return f"{int(h):02d}:{int(m):02d}:{int(s):02d}"
+
+def get_mime(file: str) -> str:
+    import magic
+    return magic.from_file(file, mime=True)
