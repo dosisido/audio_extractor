@@ -1,7 +1,7 @@
 from lib.dev import is_dev_env
 import whisper
 from typing import Dict
-from lib.config import MODEL_TYPE
+from lib.config import MODEL_TYPE, WISPER_MODEL_FOLDER
  
 import subprocess 
 import os
@@ -14,8 +14,8 @@ def transcribe(file_path, model = MODEL_TYPE) -> Dict[str, str]:
     '''
 
     # warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using FP32 instead")
-    model = whisper.load_model(model, device="cuda")
-
+    model = whisper.load_model(model, device="cuda", download_root=WISPER_MODEL_FOLDER)
+    process = None
     if is_dev_env():
         print("Trascribing file")
         process = subprocess.Popen(["python", "timer.py"])

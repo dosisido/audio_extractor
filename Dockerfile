@@ -19,5 +19,3 @@ RUN touch ./requirements_filtered.txt
 RUN grep -v 'python-magic-bin' requirements.txt > ./requirements_filtered.txt
 RUN pip install -r requirements_filtered.txt
 
-COPY ./app .
-

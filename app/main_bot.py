@@ -2,7 +2,7 @@ import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
-from lib.config import MY_ID, TOKEN_API, BOT_FOLDER as TMP_FOLDER, MAX_QUEUE_SIZE
+from lib.config import MY_ID, TOKEN_API, BOT_FOLDER as TMP_FOLDER, MAX_QUEUE_SIZE, DOCKERIZED
 from lib.file_elaborator import FileElaborator
 from lib.dev import is_dev_env
 from lib.utils_bot import get_file, user_message_id
@@ -143,7 +143,7 @@ def main():
     
   
 
-    bot.send_message(MY_ID, "Program started")
+    if not DOCKERIZED: bot.send_message(MY_ID, "Program started")
     print("Program started")
     signal.signal(signal.SIGINT, signal_handler)
     thread = threading.Thread(target=process_queue, args=(q,))

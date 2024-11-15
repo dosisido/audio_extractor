@@ -10,6 +10,7 @@ services:
       - PYTHONUNBUFFERED=1
       - DOCKERIZED=true
       - MODE=PRODUCTION
+      - WISPER_MODEL_FOLDER= /data/wisper_model
     env_file:
       - .env
     command: python ./main_bot.py
@@ -20,9 +21,15 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              count: 1
+              count: all
               capabilities: [gpu]
+    volumes:
+      - data:/data
+      - ./app:/app
 
 networks:
   mynetwork:
     driver: bridge
+
+volumes:
+  data:
