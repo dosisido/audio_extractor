@@ -9,11 +9,19 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DOCKERIZED=true
+      - MODE=PRODUCTION
     env_file:
       - .env
-    command: python /main_bot.py
+    command: python ./main_bot.py
     networks:
       - mynetwork
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
 networks:
   mynetwork:
